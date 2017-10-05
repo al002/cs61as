@@ -78,16 +78,18 @@
 
 ;Exercise 7 - Define describe-time
 (define (describe-time secs)
-  ; your code here
-  (error "Not yet implemented")
+  (cond ((< secs 60) (se secs 'seconds))
+        ((< secs 3600) (se (/ secs 60.0) 'minutes))
+        ((< secs 86400) (se (/ secs 3600.0) 'hours))
+        (else (se (/ secs 86400.0) 'days)))
 )
 
 ;Exercise 8 - Explain why superlative doesnt work:
-(define (superlative adjective word)
-  (se (word adjective 'est) word))
+(define (superlative adjective wd)
+  (se (word adjective 'est) wd))
 
 #|
 
-Explanation here.
+because parameter name `word` conflict with bulitin procedure name
 
-|#
+|# 
