@@ -169,22 +169,21 @@ Type of value returned by g: procedure
 ; SICP 1.40 - Define cubic
 
 (define (cubic a b c)
-  ; Your code here
-  (error "Not yet implemented")
+  (lambda (x) (+ ( * x x x) (* a x x) (* b x) c))
 )
 
 ; SICP 1.41 - Define double
 
 (define (double proc)
-  ; Your code here
-  (error "Not yet implemented")
+  (lambda (x) (proc (proc x)))
 )
 
 ; SICP 1.43 - Define repeated
 
 (define (my-repeated proc n)
-  ; Your code here
-  (error "Not yet implemented")
+  (if (= n 1)
+      proc
+      (compose proc (my-repeated proc (- n 1))))
 )
 
 ; Exercise 9 - Define my-every
