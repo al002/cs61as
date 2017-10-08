@@ -103,14 +103,26 @@ Type of value returned by g: procedure
 
 ; SICP 1.31a
 
+(define (factorial n)
+  (if (= n 0)
+      1
+      (* n (factorial (- n 1))))
+)
+
 (define (product term a next b)
-  ; Your code here
-  (error "Not yet implemented")
+  (if (> a b)
+      1
+      (* (term a)
+         (product term (next a) next b)))
 )
 
 (define (estimate-pi)
-  ; Your code here
-  (error "Not yet implemented")
+  (define (pi-estimater n)
+   (define (term x)
+      (/ (* 4.0 (square x))
+         (- (* 4.0 (square x)) 1)))
+   (* 2.0 (product term 1 inc n)))
+  (pi-estimater 100)
 )
 
 ; SICP 1.32a
@@ -118,41 +130,40 @@ Type of value returned by g: procedure
 ;; This is called my-accumulate so it doesn't conflict with Simply
 ;; Scheme's accumulate.
 (define (my-accumulate combiner null-value term a next b)
-  ; Your code here
-  (error "Not yet implemented")
+  (if (> a b)
+      null-value
+      (combiner (term a)
+                (my-accumulate combiner null-value term (next a) next b)))
 )
 
 ;; Write sum in terms of my-accumulate:
 (define (sum-accum term a next b)
-  ; Your code here
-  (error "Note yet implemented")
+  (my-accumulate + 0 term a next b)
 )
 
 ;; Write product in terms of my-accumulate:
 (define (product-accum term a next b)
-  ; Your code here
-  (error "Note yet implemented")
+  (my-accumulate * 1 term a next b)
 )
 
 
 ; SICP 1.33
 
 (define (filtered-accumulate combiner null-value term a next b pred)
-  ; Your code here
-  (error "Not yet implemented")
+  (cond ((> a b) null-value)
+        ((pred a) (combiner (term a) (filtered-accumulate combiner null-value term (next a) next b pred)))
+        (else (combiner null-value (filtered-accumulate combiner null-value term (next a) next b pred))))
 )
 
 (define (sum-sq-prime a b)
-  ; Your code here
-  (error "Not yet implemented")
+  (filtered-accumulate + 0 square a inc b prime?)
 )
 
 (define (rel-prime? x y)
   (= (gcd x y) 1))
 
 (define (prod-of-some-numbers n)
-  ; Your code here
-  (error "Not yet implemented")
+  (filtered-accumulate * 1 (lambda (x) x) 1 inc n (lambda (y) (rel-prime? y n)))
 )
 
 ; SICP 1.40 - Define cubic
@@ -179,8 +190,9 @@ Type of value returned by g: procedure
 ; Exercise 9 - Define my-every
 
 (define (my-every proc sent)
-  ; Your code here
-  (error "Not yet implemented")
+  (if (empty? sent)
+      '()
+      (se (proc (first sent)) (my-every proc (bf sent))))
 )
 
 ; Exercise 10 - Try out the expressions
@@ -188,24 +200,24 @@ Type of value returned by g: procedure
 #|
 
 (every (lambda (letter) (word letter letter)) 'purple)
--> returns:
+-> returns: '(pp uu rr pp ll ee)
 
 (every (lambda (number) (if (even? number) (word number number) number))
        '(781 5 76 909 24))
--> returns:
+-> returns: '(7815 7676 909 2424)
 
 (keep even? '(781 5 76 909 24))
--> returns:
+-> returns: '(76 24)
 
 (keep (lambda (letter) (member? letter 'aeiou)) 'bookkeeper)
--> returns:
+-> returns: 'ooeee
 
 (keep (lambda (letter) (member? letter 'aeiou)) 'syzygy)
--> returns:
+-> returns: ""
 
 (keep (lambda (letter) (member? letter 'aeiou)) '(purple syzygy))
--> returns:
+-> returns: ; Invalid arguments to MEMBER?:  purple aeiou [,bt for context]
 
 (keep (lambda (wd) (member? 'e wd)) '(purple syzygy))
--> returns:
+-> returns: '(purple)
 |#
