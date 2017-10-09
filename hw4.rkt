@@ -80,15 +80,36 @@
 ; SICP 2.22 - Write your explanation in the comment block:
 
 #|
-Your explanation here
+1. wrong order
+2. result is (cons 1 (cons 2 (cons 3))), so it doesn't work
 |#
 
 ; Exercise 2 - Define my-substitute
 
 (define (substitute lst old new)
-  (error "Not yet implemented"))
+  (cond ((null? lst) '())
+        ((list? (car lst)) (cons (substitute (car lst) old new) (substitute (cdr lst) old new)))
+        ((equal? old (car lst)) (cons new (substitute (cdr lst) old new)))
+        (else (cons (car lst) (substitute (cdr lst) old new))))
+)
 
 ; Exercise 3 - Define my-substitute2
 
 (define (substitute2 lst old new)
-  (error "Not yet implemented"))
+  (define (replace-word wd lst1 lst2)
+    (if (equal? wd (car lst1))
+        (car lst2)
+        (replace-word wd (cdr lst1) (cdr lst2))
+    )
+  )
+
+  (define (rec l)
+    (cond ((null? l) null)
+          ((list? l) (cons (rec (car l)) (rec (cdr l))))
+          ((member? l old) (replace-word l old new))
+          (else (word l))
+    )
+  )
+
+  (rec lst)
+)
