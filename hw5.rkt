@@ -77,19 +77,34 @@
 ;Exercise 3a - Define square-tree
 
 (define (square-tree d-l)
-  (error "Not yet implemented"))
+  (map (lambda (sub-tree)
+          (if (pair? sub-tree)
+              (square-tree sub-tree)
+              (square sub-tree)
+          )
+       )
+  d-l)
+)
 
 ;Exercise 3b - Define tree-map
 
 (define (tree-map fn tree)
-  (error "Not yet implemented"))
+  (map (lambda (sub-tree)
+          (if (pair? sub-tree)
+              (tree-map fn sub-tree)
+              (fn sub-tree)
+          )
+       ) 
+  tree)
+)
+              
 
 ;Exercise 4 -  Complete the definition of accumulate-n
 (define (accumulate-n op init seqs)
   (if (null? (car seqs))
       '()
-      (cons (foldr op init "YOUR CODE HERE")
-	    (accumulate-n op init "YOUR CODE HERE"))))
+      (cons (foldr op init (map (lambda (s) (car s)) seqs))
+	    (accumulate-n op init (map (lambda (s) (cdr s)) seqs)))))
 
 ;Exercise 5 - Complete the definitions of matrix-*-vector, transpose,
 ; and matrix-*-matrix.
@@ -119,14 +134,17 @@ Your property here
 ;Exercise 7 - Define equal?
 
 (define (my-equal? l1 l2)
-  (error "Not yet implemented"))
+  (cond ((and (empty? l1) (empty? l2)) true)
+        ((and (symbol? l1) (symbol? l2)) (eq? l1 l2))
+        ((and (pair? l1) (pair? l2)) (and (my-equal? (car l1) (car l2)) (my-equal? (cdr l1) (cdr l2))))
+        (else false)))
 
 ;Exercise 8 - Complete the definition of subsets
 (define (subsets s)
   (if (null? s)
       (list '())
       (let ((rest (subsets (cdr s))))
-        (append rest (map "YOUR CODE HERE" rest)))))
+        (append rest (map (lambda (x) (cons (car s) x)) rest)))))
 
 
 ;Exercuse 9 - Modify the calc program
@@ -151,7 +169,7 @@ Your property here
 ; Apply a function to arguments:
 
 (define (calc-apply fn args)
-  (cond ((eq? fn '+) (foldr + 0 args))
+  (cond ((eq? fn '+) (foldr + 0 args)) 
 	((eq? fn '-) (cond ((null? args) (error "Calc: no args to -"))
 			   ((= (length args) 1) (- (car args)))
 			   (else (- (car args) (foldr + 0 (cdr args))))))
